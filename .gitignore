@@ -1,0 +1,4 @@
+lib/python3.5/
+
+!.gitignore
+!lib/python3.5/site-packages/arkos

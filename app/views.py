@@ -1,5 +1,5 @@
 from flask import render_template, request, flash, redirect
-import csv_parser
+from app.classes import um_parser,um_messenger
 from app import app
 
 ALLOWED_EXTENSIONS = set(['csv'])
@@ -21,7 +21,7 @@ def upload():
         #Read returns bytes, needs to be converted to string
         csv_string = csv.read().decode('utf-8')
 
-        calls = csv_parser.parseCsv(csv_string)
+        calls = um_parser.Parser().parseCsv(csv_string)
 
         flash("Data from controller after parsing: ")
         for number in calls['phone']:

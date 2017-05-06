@@ -3,6 +3,7 @@ from flask import render_template, request, flash, redirect, session
 from passlib.hash import argon2
 from app.classes import um_parser,um_messenger
 from app import app
+from time import sleep
 
 ALLOWED_EXTENSIONS = set(['csv'])
 UM_PASSWORD = argon2.hash(environ["UM_PASSWORD"])
@@ -32,10 +33,17 @@ def handleCsv(request):
 
     calls = um_parser.parseCsv(csv_string)
 
-    flash("Data from controller after parsing: ")
+    flash("Messages sent!")
+    message_counter = 0
+
     for line in calls:
-        flash(line)
-        um_messenger.sendMessage(line[0], line[1])
+        if line[0] != "" and line[1] != "":
+            message_id = um_messenger.sendMessage(line[0], line[1])
+            message_counter += 1
+            print("Messages sent: " + str(message_counter))
+            sleep(1) #not hit rate limit of 1 msg/s
+            print(um_messenger.getMessageState(message_id))
+            
         
     return render_template('upload.html')
 
@@ -75,3 +83,7 @@ def login():
     except KeyError:
         flash('Password not set in environment variables. See the Setting Up section of the documentation')
         return render_template('login.html')
+
+@app.route('/callback', methods=['GET','POST'])
+def callback():
+    return 'Callback OK'

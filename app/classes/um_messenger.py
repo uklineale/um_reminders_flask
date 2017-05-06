@@ -11,3 +11,7 @@ api = bandwidth.client('catapult', username, token, secret)
 def sendMessage(to, message):
     message_id = api.send_message(from_ = number, to = to, text = message)
     return message_id
+
+def getMessageState(message_id):
+    message = api.get_message(message_id)
+    return message[state]

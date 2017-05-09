@@ -1,8 +1,12 @@
+from os import environ
 from flask import render_template, request, flash, redirect, session
+from passlib.hash import argon2
 from app.classes import um_parser,um_messenger
 from app import app
+from time import sleep
 
 ALLOWED_EXTENSIONS = set(['csv'])
+UM_PASSWORD = argon2.hash(environ["UM_PASSWORD"])
 
 ### Private methods ###
 
@@ -13,10 +17,12 @@ ALLOWED_EXTENSIONS = set(['csv'])
 # Params:
 #   request - the http request coming in from the form
 #       in upload.html
-# Return: the http response
+# Return:
+#   the http response
 def handleCsv(request):
     csv = request.files['file']
 
+    print("Got file sucessfully")
     if csv.filename == '':
         flash('No selected file')
         return redirect(request.url)
@@ -25,14 +31,27 @@ def handleCsv(request):
     #Read returns bytes, needs to be converted to string
     csv_string = csv.read().decode('utf-8')
 
-    calls = um_parser.Parser().parseCsv(csv_string)
+    calls = um_parser.parseCsv(csv_string)
 
-    flash("Data from controller after parsing: ")
-    for number in calls['phone']:
-        flash(number)
-        
+    flash("Messages sent!")
+    message_counter = 0
+
+    for line in calls:
+        if line[0] != "" and line[1] != "":
+            message_id = um_messenger.sendMessage(line[0], line[1])
+            message_counter += 1
+            print("Messages sent: " + str(message_counter))
+            sleep(1) #not hit rate limit of 1 msg/s
+    
+    flash("Messages sent: " + str(message_counter))
+
     return render_template('upload.html')
 
+# Validates input file is allowed
+# Params:
+#   filename - string of the input file
+# Return:
+#   true if valid, false if not
 def allowed_file(filename):
     return '.' in filename and \
             filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -52,11 +71,18 @@ def upload():
 
 @app.route('/login', methods=['POST'])
 def login():
-    #TODO: Use pw hash
-    if request.form['password'] == 'password':
-        session['logged_in'] = True
-        return render_template('upload.html')
-    else:
-        flash('Wrong password.')
+    try:
+        if argon2.verify(request.form['password'], UM_PASSWORD):
+            flash("Welcome")
+            session['logged_in'] = True
+            return render_template('upload.html')
+        else:
+            flash('Wrong password.')
+            return render_template('login.html')
+    except KeyError:
+        flash('Password not set in environment variables. See the Setting Up section of the documentation')
         return render_template('login.html')
 
+@app.route('/callback', methods=['GET','POST'])
+def callback():
+    return 'Callback OK'

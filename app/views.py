@@ -42,9 +42,9 @@ def handleCsv(request):
             message_counter += 1
             print("Messages sent: " + str(message_counter))
             sleep(1) #not hit rate limit of 1 msg/s
-            print(um_messenger.getMessageState(message_id))
-            
-        
+    
+    flash("Messages sent: " + str(message_counter))
+
     return render_template('upload.html')
 
 # Validates input file is allowed
@@ -65,7 +65,6 @@ def upload():
         return render_template('login.html')
 
     if request.method == 'POST':
-        print("POST Request")
         return handleCsv(request)
     else:
         return render_template('upload.html')

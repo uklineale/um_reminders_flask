@@ -2,4 +2,4 @@ flask
 tablib
 passlib
 argon2-cffi
-bandwidth-sdk=2.1.0b0
+bandwidth-sdk==2.1.0b0

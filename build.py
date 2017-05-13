@@ -2,9 +2,6 @@
 import os
 from app import app
 
-def run():
+if __name__ == '__main__':
     app.secret_key = os.urandom(30)
     app.run()
-
-if __name__ == '__main__':
-    run()

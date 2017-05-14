@@ -1,7 +1,10 @@
 #UM Reminders
-This app sends out Urban Ministries Open Door Clinic reminders. It does so by taking in a CSV file with a phone number and a message. Most functionality is in `app/` in `app/classes` and `app/views.py`.
+This app sends out Urban Ministries Open Door Clinic reminders. It does so by taking in a CSV file with a phone number and a message. Most functionality is in `app/` in `app/classes` and `app/views.py`.  
+  
+#Install Instructions#
+ all dependencies with pip
 
-To start the app, grant `build.py` permission to execute and run the script. 
+To start the app, run 
 
 Environment variables that must be set are:
 -UM_PASSWORD - the password for your app. Make it strong!

@@ -41,7 +41,7 @@ def handleCsv(request):
             message_id = um_messenger.sendMessage(line[0], line[1])
             message_counter += 1
             print("Messages sent: " + str(message_counter))
-            sleep(1) #not hit rate limit of 1 msg/s
+            sleep(10) #not hit rate limit of 1 msg/s or get blocked as spam
     
     flash("Messages sent: " + str(message_counter))
 

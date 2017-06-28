@@ -8,3 +8,4 @@ myEnv.sh
 bin/
 include/
 share/
+umEnv.sh

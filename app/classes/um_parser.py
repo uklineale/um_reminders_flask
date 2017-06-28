@@ -6,7 +6,7 @@ import csv
 #       csvString - a csv of type string
 #   Returns:
 #       a list of
-def parseCsv(csvString):
+def parse(csvString):
     logging.info('Parsing file')
 
     reader = csv.reader(csvString.split('\n'), delimiter=',')
@@ -19,4 +19,7 @@ def parseCsv(csvString):
 
     logging.info('Done parsing')
 
-    return reader
+    ret = list(reader)
+    print('ret in parser' + len(ret))
+
+    return list(reader)

@@ -35,17 +35,23 @@ def handleCsv(request):
     #Request file is a file stream, must be read
     #Read returns bytes, needs to be converted to string
     csv_string = csvFile.read().decode('utf-8')
-    reader = csv.reader(csv_string.split('\n'), delimiter=',')
+    csvReader = csv.reader(csv_string.split('\n'), delimiter=',')
+
     logging.info("Starting to send messages")
 
+    messages = [l for l in csvReader]
+    messages = messages[:-1]
+
     message_counter = 0
-    for line in reader:
-        print(len(line))
+    logging.info("Sending " + str(len(messages)) + " messages")
+
+    for line in messages:
         if line[0] != "" and line[1] != "":
             logging.info("Sending message to " + line[0])
             message_id = um_messenger.sendMessage(line[0], line[1])
             message_counter += 1
             sleep(1) #not hit rate limit of 1 msg/s
+
 
     logging.info("Messages sent: " + str(message_counter))
     flash("Messages sent: " + str(message_counter))

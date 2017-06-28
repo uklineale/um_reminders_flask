@@ -1,8 +1,25 @@
-import tablib
+import logging
+import csv
 
-def parseCsv(csvFile):
-    #Setup csv parser
-    data = tablib.Dataset().load(csvFile)
-    data.headers=['phone','msg']
+#   Parses a csv string
+#   Input:
+#       csvString - a csv of type string
+#   Returns:
+#       a list of
+def parse(csvString):
+    logging.info('Parsing file')
 
-    return data
+    reader = csv.reader(csvString.split('\n'), delimiter=',')
+
+    logging.debug('CSV Reader object created')
+    messages = []
+    for row in reader:
+        logging.debug(' '.join(row))
+        messages.append(row)
+
+    logging.info('Done parsing')
+
+    ret = list(reader)
+    print('ret in parser' + len(ret))
+
+    return list(reader)
